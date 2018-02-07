@@ -1,0 +1,9 @@
+{
+  "name": "PostIt_Frontend_vuejs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/EmaEvidence/PostIt_Frontend_vuejs.git",
+  "author": "EmaEvidence <emmanuelalabi563@gmail.com>",
+  "license": "MIT",
+  "private": false
+}
