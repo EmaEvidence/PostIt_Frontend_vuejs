@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import validateSignUp from '../../mixins//validate';
+import config from '../../config';
 
 export default {
   data() {
@@ -63,21 +63,14 @@ export default {
     },
     submit() {
       this.apiMessage = '';
-      const validate = validateSignUp(this.user);
-      if (validate) {
-        this.$http.post('http://localhost:3300/api/v1/user/signup', this.user)
-          .then((response) => {
-            this.apiMessage = response.body.message;
-            localStorage.setItem('token', response.body.token);
-            this.$route.router.go('/messageboard');
-          }).catch((error) => {
-            this.apiMessage = error.body.message;
-            this.$router.push('/messageboard');
-          });
-      } else {
-        this.$route.router.go('/messageboard');
-        this.apiMessage = validate;
-      }
+      this.$http.post(`${config.apiUrl}user/signup`, this.user)
+        .then((response) => {
+          this.apiMessage = response.body.message;
+          localStorage.setItem('token', response.body.token);
+          this.$router.push('/messageboard');
+        }).catch((error) => {
+          this.apiMessage = error.body.message;
+        });
     },
   },
 };
@@ -91,4 +84,3 @@ export default {
     color: red;
   }
 </style>
-

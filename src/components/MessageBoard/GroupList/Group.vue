@@ -38,10 +38,14 @@ li {
   justify-content: space-between;
   padding: 0 1rem;
   font-size: 1.5rem;
-  border: 1px solid #ccc;
+  border-bottom: 0.1rem solid #ccc;
   margin: 0.01rem 0;
-  height: 3rem;
-  background: rgb(240, 237, 237);
+  height: 4rem;
+  background: snow;
+  align-items: center;
+  cursor: pointer;
 }
-
+li:hover {
+  opacity: 0.6;
+}
 </style>

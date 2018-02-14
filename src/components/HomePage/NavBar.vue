@@ -8,7 +8,7 @@
             <li><router-link to="/" exact>Home</router-link></li>
             <span v-if="logedIn">
               <li><router-link to="/messageboard" exact>Messageboard</router-link></li>
-              <li><router-link to="/logout" exact>Log Out</router-link></li>
+              <li><button class="btn"> Log Out </button></li>
             </span>
           </ul>
         </div>
