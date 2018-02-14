@@ -45,7 +45,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 .group-controls {
   padding: 1.5rem;
@@ -66,7 +65,6 @@ export default {
   padding: 0;
 }
 .create-group-container {
-  /* border: 1px solid red; */
 }
 .create-group-container form {
   padding: 2rem;
