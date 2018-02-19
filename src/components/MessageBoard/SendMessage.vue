@@ -2,19 +2,20 @@
   <div class="message-form-wrapper">
     <form>
       <div class="text-area-wrapper">
-        <textarea placeholder="Enter your message here">
+        <textarea placeholder="Enter your message here" v-model="message">
         </textarea>
       </div>
       <div class="text-select">
         <div>
-          <input type="radio" id="test5" name="priority" />
+          <input type="radio" id="test5" name="priority" value="Normal" v-model="priority" />
           <label for="test5">Normal</label>
-          <input type="radio" id="test6" name="priority" />
+          <input type="radio" id="test6" name="priority" value="Urgent" v-model="priority" />
           <label for="test6">Urgent</label>
-          <input type="radio" name="priority" id="filled-in-box"/>
+          <input type="radio" name="priority"
+            id="filled-in-box" value="Critical" v-model="priority"/>
           <label for="filled-in-box">Critical</label>
         </div>
-        <button class="btn">
+        <button class="btn" v-on:click.prevent="sendMessage">
           Send
         </button>
       </div>
@@ -23,14 +24,35 @@
 </template>
 
 <script>
+import config from '../../config/index';
+
 export default {
   data() {
     return {
-
+      message: '',
+      priority: '',
     };
   },
   methods: {
-
+    sendMessage() {
+      const currentGroup = this.$store.getters.getCurrentGroup;
+      const { id, groupName } = currentGroup;
+      if (!id) {
+        this.$toaster.error('No Group Selected');
+      } else {
+        this.$http.post(`${config.apiUrl}group/${id}/message`,
+          { message: this.message, priority: this.priority, groupName })
+          .then((response) => {
+            this.$toaster.success('Message Sent');
+            this.message = '';
+            this.priority = '';
+            this.$store.dispatch('setNewMessage', response.data.messageData);
+          })
+          .catch((error) => {
+            this.$toaster.error(error.body.message);
+          });
+      }
+    },
   },
 };
 </script>

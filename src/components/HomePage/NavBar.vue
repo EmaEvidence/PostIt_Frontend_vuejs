@@ -3,12 +3,12 @@
     <nav class="#009688 teal">
       <div class="container">
         <div class="header">
-          <div class="brand"><h3>Post It</h3></div>
+          <div class="brand"><router-link to="/" exact><h3>Post It</h3></router-link></div>
           <ul>
             <li><router-link to="/" exact>Home</router-link></li>
-            <span v-if="logedIn">
+            <span v-if="loggedIn">
               <li><router-link to="/messageboard" exact>Messageboard</router-link></li>
-              <li><button class="btn"> Log Out </button></li>
+              <li><button v-on:click="loggedOut" class="btn"> Log Out </button></li>
             </span>
           </ul>
         </div>
@@ -21,10 +21,19 @@
 export default {
   data() {
     return {
-      logedIn: true,
     };
   },
   methods: {
+    loggedOut() {
+      this.$store.dispatch('logOut');
+      window.location.href = '/';
+      localStorage.removeItem('token');
+    },
+  },
+  computed: {
+    loggedIn() {
+      return this.$store.state.user.loggedIn;
+    },
   },
 };
 </script>
@@ -75,7 +84,7 @@ export default {
   a {
     font-size: 1.5rem;
   }
-  .router-link-active {
+  li .router-link-active {
     border-top: 0.5rem solid white;
   }
 </style>

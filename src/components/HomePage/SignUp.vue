@@ -1,6 +1,5 @@
 <template>
   <form>
-    <span>{{apiMessage}}</span>
     <div>
       <input type="text" placeholder="Firstname Lastname" v-model="user.name" />
     </div>
@@ -27,6 +26,10 @@
         v-model ="user.cpassword" v-on:keyup="checkPassword" />
     </div>
     <div>
+      <div v-if="showLoader">
+        <img src="http://res.cloudinary.com/damc3mj5u/image/upload/v1519080450/ajax-loader_nvwchn.gif"
+          alt="loader" class="loader"/>
+      </div>
       <input type="submit" class="waves-effect waves-light btn" v-on:click.prevent="submit" />
     </div>
   </form>
@@ -34,6 +37,7 @@
 
 <script>
 import config from '../../config';
+import addTokenToHeader from '../../mixins/httpCalls';
 
 export default {
   data() {
@@ -48,7 +52,7 @@ export default {
       },
       pmatch: false,
       pmismatch: false,
-      apiMessage: '',
+      showLoader: false,
     };
   },
   methods: {
@@ -62,14 +66,19 @@ export default {
       }
     },
     submit() {
-      this.apiMessage = '';
+      this.showLoader = true;
       this.$http.post(`${config.apiUrl}user/signup`, this.user)
         .then((response) => {
-          this.apiMessage = response.body.message;
           localStorage.setItem('token', response.body.token);
+          this.$store.dispatch('loggedIn');
+          this.$store.dispatch('setUser', response.body.user);
+          this.showLoader = false;
+          this.$toaster.success('Registration Successful');
+          addTokenToHeader();
           this.$router.push('/messageboard');
         }).catch((error) => {
-          this.apiMessage = error.body.message;
+          this.showLoader = false;
+          this.$toaster.error(error.body.message);
         });
     },
   },
@@ -82,5 +91,9 @@ export default {
   }
   .error {
     color: red;
+  }
+  .loader {
+    width: 6rem;
+    height: 6rem;
   }
 </style>

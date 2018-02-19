@@ -1,9 +1,15 @@
 FROM node:latest
 
-WORKDIR /the/workdir/path
+WORKDIR /app/
 
 COPY package*.json ./
 
-RUN yarn install
+RUN npm install
 
-EXPOSE 3300
+ENV NODE_ENV=development
+
+EXPOSE 8080
+
+COPY . .
+
+CMD ["npm", "start"]
