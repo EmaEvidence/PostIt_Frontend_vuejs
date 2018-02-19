@@ -1,125 +1,45 @@
 <template>
   <div class="message-section">
     <div class="message-container">
-      <div v-for="message in messages">
+      <div v-for="message in getGroupMessages" v-bind:key="message.id">
         <p> {{message.message}} </p>
-        <span>{{message.sender}}</span><span>{{message.timeSent}}</span>
+        <span>{{message.senderUsername}}</span>
+        <span>{{message.priority}}</span>
+        <span>{{message.createdAt.split('T')[0]}}</span>
       </div>
     </div>
     <div v-if="manageTeam" class="manage-group">
-      <h6><b>Manage Group Members</b></h6>
-      <div class="members-container">
-        <li>Emmanuel <button class="custom-btn">Add</button></li>
-        <li>Emmanuel <button class="custom-btn">Remove</button></li>
-        <li>Emmanuel <button class="custom-btn">Add</button></li>
-        <li>Emmanuel <button class="custom-btn">Remove</button></li>
-        <li>Emmanuel <button class="custom-btn">Add</button></li>
-        <li>Emmanuel <button class="custom-btn">Remove</button></li>
-        <li>Emmanuel <button class="custom-btn">Add</button></li>
-        <li>Emmanuel <button class="custom-btn">Remove</button></li>
-        <li>Emmanuel <button class="custom-btn">Add</button></li>
-        <li>Emmanuel <button class="custom-btn">Remove</button></li>
-        <li>Emmanuel <button class="custom-btn">Add</button></li>
-        <li>Emmanuel <button class="custom-btn">Remove</button></li>
-        <li>Emmanuel <button class="custom-btn">Add</button></li>
-        <li>Emmanuel <button class="custom-btn">Remove</button></li>
-        <li>Emmanuel <button class="custom-btn">Add</button></li>
-        <li>Emmanuel <button class="custom-btn">Remove</button></li>
-        <li>Emmanuel <button class="custom-btn">Add</button></li>
-      </div>
-      <div>
-        <button class="btn left"> Prev </button>
-        <button class="btn right"> Next </button>
-      </div>
+      <GroupMembers />
     </div>
   <button v-on:click.prevent="showTeamMembers" class="team-btn">Manage Group</button>
   </div>
 </template>
 
 <script>
+import GroupMembers from './GroupList/GroupMembers';
+
 export default {
+  components: {
+    GroupMembers,
+  },
   data() {
     return {
-      messages: [
-        {
-          id: 1,
-          message: 'When sfjd wehwe fhjjsdf fbdsf dshfbsd shfb shjdfbsd sdhfj',
-          sender: 'Emmanuel',
-          timeSent: '1990/12/23',
-        },
-        {
-          id: 2,
-          message: 'When sfjd wehwe fhjjsdf fbdsf dshfbsd shfb shjdfbsd sdhfj',
-          sender: 'Emmanuel',
-          timeSent: '1990/12/23',
-        },
-        {
-          id: 3,
-          message: 'When sfjd wehwe fhjjsdf fbdsf dshfbsd shfb shjdfbsd sdhfj',
-          sender: 'Emmanuel',
-          timeSent: '1990/12/23',
-        },
-        {
-          id: 3,
-          message: 'When sfjd wehwe fhjjsdf fbdsf dshfbsd shfb shjdfbsd sdhfj',
-          sender: 'Emmanuel',
-          timeSent: '1990/12/23',
-        },
-        {
-          id: 3,
-          message: 'When sfjd wehwe fhjjsdf fbdsf dshfbsd shfb shjdfbsd sdhfj',
-          sender: 'Emmanuel',
-          timeSent: '1990/12/23',
-        },
-        {
-          id: 3,
-          message: 'When sfjd wehwe fhjjsdf fbdsf dshfbsd shfb shjdfbsd sdhfj',
-          sender: 'Emmanuel',
-          timeSent: '1990/12/23',
-        },
-        {
-          id: 3,
-          message: 'When sfjd wehwe fhjjsdf fbdsf dshfbsd shfb shjdfbsd sdhfj',
-          sender: 'Emmanuel',
-          timeSent: '1990/12/23',
-        },
-        {
-          id: 3,
-          message: 'When sfjd wehwe fhjjsdf fbdsf dshfbsd shfb shjdfbsd sdhfj',
-          sender: 'Emmanuel',
-          timeSent: '1990/12/23',
-        },
-        {
-          id: 3,
-          message: 'When sfjd wehwe fhjjsdf fbdsf dshfbsd shfb shjdfbsd sdhfj',
-          sender: 'Emmanuel',
-          timeSent: '1990/12/23',
-        },
-        {
-          id: 3,
-          message: 'When sfjd wehwe fhjjsdf fbdsf dshfbsd shfb shjdfbsd sdhfj',
-          sender: 'Emmanuel',
-          timeSent: '1990/12/23',
-        },
-        {
-          id: 3,
-          message: 'When sfjd wehwe fhjjsdf fbdsf dshfbsd shfb shjdfbsd sdhfj',
-          sender: 'Emmanuel',
-          timeSent: '1990/12/23',
-        },
-        {
-          id: 3,
-          message: 'When sfjd wehwe fhjjsdf fbdsf dshfbsd shfb shjdfbsd sdhfj',
-          sender: 'Emmanuel',
-          timeSent: '1990/12/23',
-        },
-      ],
       manageTeam: false,
     };
   },
   methods: {
     showTeamMembers() {
-      this.manageTeam = !this.manageTeam;
+      const { id } = this.$store.getters.getCurrentGroup;
+      if (!id) {
+        this.$toaster.error('No Group selected');
+      } else {
+        this.manageTeam = !this.manageTeam;
+      }
+    },
+  },
+  computed: {
+    getGroupMessages() {
+      return this.$store.getters.getCurrentMessages;
     },
   },
 };
@@ -146,11 +66,7 @@ export default {
   }
   .manage-group {
     width: 20%;
-    padding: 2rem;
-  }
-  .members-container li {
-    margin: 1rem 0;
-    font-size: 1.1rem;
+    padding: 2rem 1rem;
   }
   .team-btn {
     width: 5rem;
@@ -159,19 +75,7 @@ export default {
     background: teal;
     color: white;
     position: absolute;
-    bottom: 12%;
+    bottom: 14%;
     right: 1.5%;
-  }
-  .custom-btn {
-    background: teal;
-    border: 0;
-    border-radius: 0.5rem;
-    color: white;
-  }
-  .members-container {
-    text-align: justify;
-  }
-  .members-container button {
-    float: right;
   }
 </style>

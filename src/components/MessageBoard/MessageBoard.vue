@@ -13,9 +13,11 @@
 </template>
 
 <script>
+import jwt from 'jsonwebtoken';
 import GroupList from './GroupList/GroupList';
 import Message from './Message';
 import SendMessage from './SendMessage';
+import config from '../../config/index';
 
 export default {
   components: {
@@ -28,6 +30,25 @@ export default {
     };
   },
   methods: {
+  },
+  mounted() {
+    const user = jwt.decode(localStorage.getItem('token'));
+    if (user) {
+      this.$http.get(`${config.apiUrl}user/groups`)
+        .then((response) => {
+          this.$store.dispatch('setGroups', response.data.groups);
+        })
+        .catch((error) => {
+          this.$toaster.error(error.body.message);
+        });
+      this.$http.get(`${config.apiUrl}user/all`)
+        .then((response) => {
+          this.$store.dispatch('setUsers', response.body.users);
+        })
+        .catch((error) => {
+          this.$toaster.error(error.body.message);
+        });
+    }
   },
 };
 </script>
