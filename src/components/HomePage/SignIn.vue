@@ -1,6 +1,5 @@
 <template>
   <form>
-    <span>{{apiMessage}}</span>
     <div>
       <input type="text" placeholder="Username" v-model="user.username" />
     </div>
@@ -15,6 +14,7 @@
 
 <script>
 import config from '../../config';
+import addTokenToHeader from '../../mixins/httpCalls';
 
 export default {
   name: 'SignIn',
@@ -24,7 +24,6 @@ export default {
         username: '',
         password: '',
       },
-      apiMessage: '',
     };
   },
   methods: {
@@ -33,9 +32,13 @@ export default {
         .then((response) => {
           this.apiMessage = response.body.message;
           localStorage.setItem('token', response.body.token);
+          this.$store.dispatch('loggedIn');
+          this.$store.dispatch('setUser', response.body.user);
+          this.$toaster.success('Login Successful');
+          addTokenToHeader();
           this.$router.push('/messageboard');
         }).catch((error) => {
-          this.apiMessage = error.body.message;
+          this.$toaster.error(error.body.message);
         });
     },
   },

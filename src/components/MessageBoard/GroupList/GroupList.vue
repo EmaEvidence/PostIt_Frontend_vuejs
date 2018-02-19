@@ -8,18 +8,19 @@
     </div>
     <div v-if="createFormControl" class="create-group-container">
       <form>
-        <input type="text" placeholder="Group Name" />
-        <button class="btn">Create</button>
+        <input type="text" placeholder="Group Name" v-model="groupName" />
+        <button class="btn" v-on:click.prevent="createGroup">Create</button>
       </form>
     </div>
     <div class="group">
-      <group v-bind:group="{groups}"></group>
+      <group></group>
     </div>
   </div>
 </template>
 
 <script>
 import Group from './Group';
+import config from '../../../config/index';
 
 export default {
   components: {
@@ -27,20 +28,24 @@ export default {
   },
   data() {
     return {
-      groups: [
-        {
-          name: 'Andela',
-        },
-        {
-          name: 'Andela21',
-        },
-      ],
+      groupName: '',
       createFormControl: false,
     };
   },
   methods: {
     showCreateForm() {
       this.createFormControl = !this.createFormControl;
+    },
+    createGroup() {
+      this.$http.post(`${config.apiUrl}group`, { groupName: this.groupName, users: [] })
+        .then((response) => {
+          this.$store.dispatch('createGroup', response.data.group);
+          this.$toaster.success(response.body.message);
+          this.groupName = '';
+        })
+        .catch((error) => {
+          this.$toaster.error(error.body.message);
+        });
     },
   },
 };

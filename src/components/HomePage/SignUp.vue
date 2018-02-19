@@ -1,6 +1,5 @@
 <template>
   <form>
-    <span>{{apiMessage}}</span>
     <div>
       <input type="text" placeholder="Firstname Lastname" v-model="user.name" />
     </div>
@@ -34,6 +33,7 @@
 
 <script>
 import config from '../../config';
+import addTokenToHeader from '../../mixins/httpCalls';
 
 export default {
   data() {
@@ -48,7 +48,6 @@ export default {
       },
       pmatch: false,
       pmismatch: false,
-      apiMessage: '',
     };
   },
   methods: {
@@ -62,14 +61,16 @@ export default {
       }
     },
     submit() {
-      this.apiMessage = '';
       this.$http.post(`${config.apiUrl}user/signup`, this.user)
         .then((response) => {
-          this.apiMessage = response.body.message;
           localStorage.setItem('token', response.body.token);
+          this.$store.dispatch('loggedIn');
+          this.$store.dispatch('setUser', response.body.user);
+          this.$toaster.success('Registration Successful');
+          addTokenToHeader();
           this.$router.push('/messageboard');
         }).catch((error) => {
-          this.apiMessage = error.body.message;
+          this.$toaster.error(error.body.message);
         });
     },
   },

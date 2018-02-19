@@ -3,7 +3,11 @@
         <div class="main-wrapper">
           <div class="container">
             <div class="main col s12 m6">
-              <div class="auth-container">
+              <div v-if="loggedIn" class="welcome">
+                <img src="http://upload.wikimedia.org/wikipedia/commons/8/84/BabyTuxAlpha.png" />
+                <h3> Welcome {{getUser}} </h3>
+              </div>
+              <div v-else class="auth-container">
                 <div class="form-controls">
                   <ul>
                     <li v-bind:class="{active: formControl.signUp}">
@@ -58,6 +62,7 @@ export default {
   },
   data() {
     return {
+      username: '',
       formControl: {
         signUp: true,
         signIn: false,
@@ -93,6 +98,14 @@ export default {
           return this.formControl;
         }
       }
+    },
+  },
+  computed: {
+    loggedIn() {
+      return this.$store.state.user.loggedIn;
+    },
+    getUser() {
+      return this.$store.getters.getUser;
     },
   },
 };
@@ -155,5 +168,16 @@ export default {
   }
   .active {
     border-bottom: 0.5rem solid green;
+  }
+  .welcome {
+    padding: 3rem;
+  }
+  h3 {
+    color: green;
+  }
+  .welcome img {
+    width: 100%;
+    height: 90%;
+    margin-top: 2rem;
   }
 </style>

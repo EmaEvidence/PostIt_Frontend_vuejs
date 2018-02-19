@@ -5,6 +5,14 @@ import MessageBoard from '../components/MessageBoard/MessageBoard';
 
 Vue.use(Router);
 
+export const checkUser = () => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    return true;
+  }
+  return false;
+};
+
 export default new Router({
   mode: 'history',
   routes: [
@@ -17,6 +25,14 @@ export default new Router({
       path: '/messageboard',
       name: 'MessageBoard',
       component: MessageBoard,
+      beforeEnter(to, from, next) {
+        const loggedIn = checkUser();
+        if (loggedIn) {
+          next(true);
+        } else {
+          next('/');
+        }
+      },
     },
   ],
 });
