@@ -1,7 +1,7 @@
 <template>
   <form>
     <div>
-      <input type="text" placeholder="Firstname Lastname" v-model="user.name" />
+      <input type="text" value="Firstname Lastname" v-model="user.name" />
     </div>
     <div>
       <input type="text" placeholder="Username" v-model="user.username" />
